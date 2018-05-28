@@ -135,9 +135,12 @@ int clipboard_wait(int clipboard_id, int region, void *buf, size_t count){
 	int nbytes;
 	char dados[10];
 	int size_message;
+	
 	sprintf(dados,"w%d-%d", region, count);
 	printf("a flag tem a seguinte forma ----> %s\n", dados);
+
 	write(clipboard_id, dados, 10);
+
 	read(clipboard_id, dados, 10);
 
 	size_message=atoi(dados);
@@ -157,4 +160,13 @@ int clipboard_wait(int clipboard_id, int region, void *buf, size_t count){
 	printf("CLIPBOARD_WAIT: mensagem recebida -> %s", buf);
 
 	return nbytes;
+}
+
+/*
+Function: clipboard_close
+Description:
+*/
+void clipboard_close(int clipboard_id){
+	//É preciso fazer unlink?
+	close(clipboard_id); 
 }

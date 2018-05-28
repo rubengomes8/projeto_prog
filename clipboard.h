@@ -1,11 +1,10 @@
-#define INBOUND_FIFO "INBOUND_FIFO"
-#define OUTBOUND_FIFO "OUTBOUND_FIFO"
-
-
 
 #include <sys/types.h>
 #include <pthread.h>
 
+//------------------------------------------------------------------------------------------------------------//
+// 		O que está em cima é para retirar, o cliente nao deve saber que tipo de includes precisamos acho eu	  //
+//------------------------------------------------------------------------------------------------------------//
 
 int clipboard_connect(char * clipboard_dir);
 int clipboard_copy(int clipboard_id, int region, void *buf, size_t count);

@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <sys/un.h> 
 #include <unistd.h>
+#include <string.h>
 
 
 int main(){
@@ -12,6 +13,7 @@ int main(){
 		
 		char dados[100];
 		void *buf;
+		char *msg;
 		int sock_fd = clipboard_connect("./");
 		printf("APP - Saí do connect\n");
 		int copy_flag=0, flag=0, paste_flag=0, wait_flag = 0, reg;
@@ -21,12 +23,17 @@ int main(){
 		///tamanho do buff que podemos copiar do clipboard 
 		///Acho que podemos escolher o tamanho que quisermos
 		int size_buf=100;
-		int size;
+		size_t size;
+		size_t tamanho = 10;
 		//Recebe o que o cliente pretende fazer - copy ou paste 
 		do{
-			printf("What do you want to do?\n --Copy to clipboard press 0 \n -- Paste from clipboard press 1\n -- Wait for changes of clipboard on a region press 2\n");
+			/*****************************************************************************
+								RETIRAR SHOW CLIPBOARD PA ENTREGAR
+			*****************************************************************************/
+			printf("What do you want to do?\n --Copy to clipboard press 0 \n -- Paste from clipboard press 1\n -- Wait for changes of clipboard on a region press 2\n ");
 			fgets(dados,10, stdin);
 			flag = atoi(dados);
+            
 			if(flag==0){
 				
 				copy_flag=1;
@@ -45,25 +52,36 @@ int main(){
 			printf("Region:");
 			fgets(dados,10, stdin);
 			reg = atoi(dados);
-			
+			/*
 			///não deixar ultrapassar o limite máximo
 			printf("Tamanho máximo do conteúdo:\n");
 			fgets(dados,10, stdin);
 			size = atoi(dados);
 			
 			buf= (void *) malloc((size+1));
-			
+			*/
 			printf("Data:\n");
-			fgets(buf, size+1, stdin);
-			
+			//fgets(buf, size+1, stdin);
+			msg = (char*) malloc(sizeof(char)*tamanho);
+			size=getline(&msg, &tamanho , stdin);	
+	
+			buf = (void*) malloc(size);
+	
+			memcpy(buf, msg, size);
+			printf("%zu ---> %s\n", size, buf);
+			//memcpy(buf, msg, size);
+		
+			printf("ANTES COPY\n");
+		
 			//IMPOTANTE: size é do tipo int e acho que tem de ser size_t !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			nbytes=clipboard_copy(sock_fd, reg, buf, strlen(buf));
+			nbytes=clipboard_copy(sock_fd, reg, buf, size);
 			
 			if(nbytes == 0){
 				printf("Erro clipboard_copy\n");
 				exit(-1);
 
 			}
+			free(msg);
 			free(buf);
 			
 			//clipboard_copy();
@@ -94,10 +112,15 @@ int main(){
 			reg = atoi(dados);
 			//REGIAO SO PODE SER ate 9 ->tratar erros
 			//no maximo 100
+
 			buf=malloc(size_buf);
+
 			nbytes = clipboard_wait(sock_fd, reg, buf, size_buf);
+
+			printf("Dados pedidos: %s\n", (char *)buf);
+			free(buf);	
 		}
 		
-		close(sock_fd);
+		
 		exit(0);
 	}
