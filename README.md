@@ -1,4 +1,4 @@
-# projeto_psis
+# Projeto de Programação de Sistemas
 
 Este projeto consiste no desenvolvimento de uma área de transferência de dados num sistema distribuído de servidores, onde os dados são partilhados por todos os servidores. Os dois constituintes principais do processo são os servidores de armazenamento de dados numa estrutura de dados com 10 regiões e os clientes que têm a possibilidade de interagir com o servidor local.
 
